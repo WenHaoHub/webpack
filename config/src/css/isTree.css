@@ -1,0 +1,21 @@
+/* tree小三角样式 */
+.el-tree-node__expand-icon.expanded {
+    -webkit-transform: rotate(0deg) !important;
+    transform: rotate(0deg) !important;
+  }
+  /* // 展开 */
+  .el-icon-caret-right:before {
+    content: url('../img/open.png') !important;
+    font-size: 16px;
+  }
+  /* 关闭*/
+  .expanded:before {
+    content: url('../img/closed.png') !important;
+    font-size: 16px;
+  }
+  /* 没有子级  margin-left跟iconfont宽度一致*/
+  .is-leaf.el-tree-node__expand-icon.el-icon-caret-right:before {
+    content: "" !important;
+    font-size: 16px;
+    margin-left: 12px;
+  }

@@ -1,0 +1,7 @@
+// vuej文件后缀格式 测试loader用
+<script>
+  export default {
+  a:1,
+  b:2
+  }
+</script>

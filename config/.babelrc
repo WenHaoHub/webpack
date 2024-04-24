@@ -1,0 +1,46 @@
+//babel run time config
+// {
+//   "presets": [
+//     "@babel/preset-env", //使用jes6 7 8转换成es5预设
+//     "@vue/babel-preset-jsx"// 支持jsx语法
+//   ],
+//   "plugins": [
+//     //element ui按需引入  babel-plugin-component 这里配置是自动引入用到的组件对应的样式
+//     //不用全部引入 做到了减小包的体积
+//     [
+//       "component",
+//       {
+//         "libraryName": "element-ui",
+//         "styleLibraryName": "theme-chalk"
+//       }
+//     ],
+//     //es更高级的语法转换
+//     "@babel/plugin-transform-runtime"
+//   ]
+// }
+
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "useBuiltIns": "usage",
+        "corejs": {
+          "version": "3.20.3",
+          "proposals": true
+        },
+        "modules": false
+      }
+    ],
+    "@vue/babel-preset-jsx" // 支持jsx语法
+  ],
+  "plugins": ["@babel/plugin-transform-runtime"]
+}
+
+// [
+//   "component",
+//   {
+//     "libraryName": "element-ui",
+//     "styleLibraryName": "theme-chalk"
+//   }
+// ],
