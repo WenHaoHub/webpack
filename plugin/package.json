@@ -6,7 +6,8 @@
   "scripts": {
     "build": "webpack --config config/webpack.common.js --env production",
     "build progress": "webpack --config config/webpack.common.js --env production --progress",
-    "dev": "webpack-dev-server --config config/webpack.common.js --env devlopment"
+    "dev": "webpack-dev-server --config config/webpack.common.js --env devlopment",
+    "debug": "node --inspect-brk ./node_modules/webpack-cli/bin/cli.js --config config/webpack.common.js --env devlopment"
   },
   "keywords": [],
   "author": "",

@@ -4,13 +4,11 @@ const VueLoaderPlugin = require("vue-loader/lib/plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin"); // 将css从js中分离为单独的css文件
 const { merge } = require("webpack-merge"); //合并
 
-// const consoleLoader = require("../src/webpack/console-loader");
-const vuejLoader = path.resolve(__dirname, "../src/webpack/vuej-loader"); // 指定自定义loader的位置
 const devConfig = require("./webpack.dev");
 const prodConfig = require("./webpack.prod");
-// console.log(">>>process.env.NODE_ENV", process.env.NODE_ENV);
-// const Webpack = require('webpack')//webpack服务器 热更新 类似live serve
-// module.exports = {
+//plugin测试
+const MyExamplePlugin = require("../src/webpack/MyExamplePlugin.js");
+const BannerWebpackPlugin  = require("../src/webpack/BannerWebpackPlugin .js");
 module.exports = function (env) {
   // env=="dev": "webpack-dev-server --config config/webpack.config.js 这里配置的>>>>--env production<<<<"
   const isPorduction = env.production === true;
@@ -39,18 +37,6 @@ module.exports = function (env) {
           use: ["babel-loader"],
           exclude: ["/node_modules/"],
         },
-        {
-          test: /\.vuej$/,
-          use: [
-            {
-              loader: vuejLoader, // 这里填写你的loader文件的路径
-              options: {
-                env: "dev",
-              }, // 如果你的loader需要配置参数，可以添加在这里
-            },
-          ],
-          exclude: ["/node_modules/"],
-        },
         { test: /\.vue$/, use: ["vue-loader"] },
         {
           test: /\.(png|jpg|gif|jpeg|webp|svg|eot)$/,
@@ -73,6 +59,11 @@ module.exports = function (env) {
       new MiniCssExtractPlugin({
         filename: "css/[name].[fullhash:6].css",
       }),
+
+      // 使用插件并可选地传入选项
+      // new MyExamplePlugin({ option: true }),
+      new BannerWebpackPlugin({ name: 'wh给你头部的注释' }),
+
       // new Webpack.HotModuleReplacementPlugin(),
     ],
   });
