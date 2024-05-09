@@ -4,9 +4,10 @@ const VueLoaderPlugin = require("vue-loader/lib/plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin"); // 将css从js中分离为单独的css文件
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const { merge } = require("webpack-merge"); //合并
+const pkg = require("../package.json");
+let cachePath = path.resolve(__dirname, `../../cache/${pkg.name}/babel-loader`);
 
 // const consoleLoader = require("../src/webpack/console-loader");
-const vuejLoader = path.resolve(__dirname, "../src/webpack/vuej-loader"); // 指定自定义loader的位置
 const devConfig = require("./webpack.dev");
 const prodConfig = require("./webpack.prod");
 // console.log(">>>process.env.NODE_ENV", process.env.NODE_ENV);
@@ -23,7 +24,7 @@ module.exports = function (env) {
     // 在Node.js中，__dirname 总是指向 被执行的js文件 的绝对路径
     entry: path.resolve(__dirname, "../src/main.js"), //入口文件
     output: {
-      filename: "[name].[hash:8].js", //打包后的名字  生成8位数的hash
+      filename: "[name].[chunkhash:6].js", //打包后的名字  生成8位数的hash
       path: path.resolve(__dirname, "../dist"), //打包的路径
     },
     //路径相关 配置别名和扩展名
@@ -53,17 +54,12 @@ module.exports = function (env) {
         },
         {
           test: /\.js$/,
-          use: ["babel-loader"],
-          exclude: ["/node_modules/"],
-        },
-        {
-          test: /\.vuej$/,
           use: [
             {
-              loader: vuejLoader, // 这里填写你的loader文件的路径
+              loader: "babel-loader",
               options: {
-                env: "dev",
-              }, // 如果你的loader需要配置参数，可以添加在这里
+                cacheDirectory: cachePath, //开启缓存
+              },
             },
           ],
           exclude: ["/node_modules/"],
@@ -95,11 +91,48 @@ module.exports = function (env) {
       new VueLoaderPlugin(),
       //从js中抽离css
       new MiniCssExtractPlugin({
-        filename: "css/[name].[fullhash:6].css",
+        filename: "css/[name].[contenthash:6].css",
+        // filename: "css/[name].[chunkhash:6].css",
       }),
       new CssMinimizerPlugin(), //压缩 css
       // new Webpack.HotModuleReplacementPlugin(),
     ],
+    optimization: {
+      splitChunks: {
+        chunks: "all",
+        cacheGroups: {
+          elementUI: {
+            priority: 20,
+            name: "element-ui",
+            test: /element-ui/,
+            reuseExistingChunk: true,
+          },
+          echarts: {
+            priority: 20,
+            name: "echarts",
+            test: /echarts/,
+            reuseExistingChunk: true,
+          },
+          vendor: {
+            // name: `chunk-vendors`,
+            test: /[\\/]node_modules[\\/]/, //控制此缓存组选择的模块。省略它将选择所有模块。它可以匹配绝对模块资源路径或块名称。匹配块名称时，将选择块中的所有模块。
+            minChunks: 1,
+            // maxInitialRequests: 12,
+            maxAsyncRequests: 5,
+            minSize: 100 * 1024,
+            maxSize: 5 * 1000 * 1024,
+            priority: -10, //一个模块可以属于多个缓存组,模块出现在优先级最高的缓存组中
+          },
+          common: {
+            name: `chunk-common`,
+            minChunks: 2,
+            priority: -20,
+            chunks: "initial",
+            reuseExistingChunk: true, //如果当前块包含已经从主包中分离出来的模块，那么该模块将被重用，而不是生成新的模块
+          },
+        },
+      },
+    },
   });
   // return mergeConfig;
 };

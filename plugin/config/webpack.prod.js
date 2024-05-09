@@ -6,7 +6,7 @@ const CopyPlugin = require("copy-webpack-plugin"); //复制不需要打包的文
 
 module.exports = {
   mode: "production",
-  devtool:'source-map',
+  devtool: "source-map",
   // devtool:'none',
   plugins: [
     new CleanWebpackPlugin(),
@@ -26,7 +26,7 @@ module.exports = {
         },
       ],
     }),
-    
+
     // new BundleAnalyzerPlugin(),
   ],
 };
